@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "API_KEY": "@api_key",
+    "API_URL": "@api_url",
+    "API_MODEL": "@api_model",
+    "API_TIMEOUT": "@api_timeout",
+    "LOGIN_PASSWORD": "@login_password",
+    "ANNOUNCEMENT_TEXT": "@announcement_text"
+  }
+}

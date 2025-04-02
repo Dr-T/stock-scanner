@@ -14,6 +14,60 @@
 6. 重构为Vue3+Vite+TS+Naive UI，支持响应式布局  
 7. 支持GitHub Actions 一键部署  
 8. 支持Nginx反向代理，可通过80/443端口访问
+9. 支持Vercel一键部署，轻松实现前端应用托管
+
+## Vercel一键部署
+
+本项目支持使用Vercel进行完整部署，包括前端应用和Serverless API功能，实现快速上线和全球CDN加速。
+
+### 部署步骤
+
+1. Fork本仓库到你的GitHub账号
+
+2. 注册并登录[Vercel](https://vercel.com/)
+
+3. 在Vercel中导入你fork的GitHub仓库
+   - 点击"New Project"
+   - 选择你fork的仓库
+   - 配置项目设置
+
+4. 配置构建设置
+   - 设置构建命令: `cd frontend && npm install && npm run build`
+   - 输出目录: `frontend/dist`
+   - 安装命令: `cd frontend && npm install`
+   - 开发命令: `cd frontend && npm run dev`
+
+5. 配置环境变量
+   在Vercel项目设置中添加以下环境变量:
+   ```
+   API_KEY=你的API密钥
+   API_URL=你的API地址
+   API_MODEL=你的API模型
+   API_TIMEOUT=超时时间(默认60秒)
+   LOGIN_PASSWORD=登录密码(可选)
+   ANNOUNCEMENT_TEXT=公告文本
+   ```
+
+6. 点击"Deploy"按钮开始部署
+
+7. 部署完成后，Vercel会提供一个域名，可以直接访问你的应用
+
+### Serverless API功能
+
+本项目已完全支持通过Vercel的Serverless函数实现后端API功能，无需额外部署Python服务器。主要API功能包括：
+
+- `/api/config` - 获取应用配置信息
+- `/api/login` - 用户登录认证
+- `/api/analyze` - 股票分析功能（模拟数据）
+- `/api/test_api_connection` - 测试外部API连接
+
+这些API通过`frontend/api/index.js`实现，并在`frontend/vercel.json`中配置了正确的路由。
+
+### 注意事项
+
+- Vercel部署已支持基本的API功能，但某些数据密集型操作仍有限制
+- Serverless函数提供模拟分析结果，如需真实分析，可以配置`API_URL`连接到外部API服务
+- 对于需要完整分析能力的场景，仍建议使用Docker部署完整应用
 
 ## Docker镜像一键部署
 
@@ -125,6 +179,18 @@ docker-compose up -d
 | SSH_PRIVATE_KEY | SSH私钥 |
 | DEPLOY_PATH | 部署路径 |
 | SLACK_WEBHOOK | Slack通知Webhook（可选） |
+
+
+## Vercel与Docker部署对比
+
+| 特性 | Vercel部署 | Docker部署 |
+| --- | --- | --- |
+| 部署难度 | 简单，几分钟内完成 | 中等，需要服务器和Docker知识 |
+| 功能完整性 | 前端功能完整，基本API功能已支持 | 完整支持所有高级分析功能 |
+| 全球访问速度 | 快速（全球CDN） | 取决于服务器位置 |
+| 成本 | 个人项目免费 | 需要自备服务器 |
+| 数据处理能力 | 基本分析（通过Serverless函数） | 强大（完整的Python分析引擎） |
+| 适用场景 | 展示、基本分析功能 | 高级分析、数据密集型应用 |
 
 
 ## 注意事项 (Notes)
