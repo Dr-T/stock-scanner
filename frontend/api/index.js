@@ -15,7 +15,16 @@ const ANNOUNCEMENT_TEXT = process.env.ANNOUNCEMENT_TEXT || '';
 async function handleRequest(req, res) {
   try {
     const { pathname, query } = parse(req.url, true);
-    const path = pathname.replace(/^\/api/, '');
+    // 修复路径匹配问题，确保正确处理API路径
+    // 无论是直接访问/check_auth还是/api/check_auth都能正确匹配
+    let path = pathname;
+    if (path.startsWith('/api/')) {
+      path = path.substring(4); // 移除'/api/'前缀
+    } else if (path === '/api') {
+      path = '/';
+    } else if (!path.startsWith('/')) {
+      path = '/' + path;
+    }
     
     // 设置CORS头
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -41,7 +50,8 @@ async function handleRequest(req, res) {
     }
     
     // 检查是否需要登录接口
-    if (path === '/need_login' && req.method === 'GET') {
+    if ((path === '/need_login' || path === 'need_login') && req.method === 'GET') {
+      console.log('检查是否需要登录:', { path, requireLogin: Boolean(LOGIN_PASSWORD.trim()) });
       res.setHeader('Content-Type', 'application/json');
       res.statusCode = 200;
       res.end(JSON.stringify({
@@ -51,9 +61,10 @@ async function handleRequest(req, res) {
     }
     
     // 检查认证状态接口
-    if (path === '/check_auth' && req.method === 'GET') {
+    if ((path === '/check_auth' || path === 'check_auth') && req.method === 'GET') {
       const authHeader = req.headers.authorization;
       const isAuthenticated = Boolean(authHeader && authHeader.startsWith('Bearer '));
+      console.log('检查认证状态:', { path, authHeader, isAuthenticated });
       
       res.setHeader('Content-Type', 'application/json');
       res.statusCode = 200;
