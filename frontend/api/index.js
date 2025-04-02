@@ -40,6 +40,29 @@ async function handleRequest(req, res) {
       return;
     }
     
+    // 检查是否需要登录接口
+    if (path === '/need_login' && req.method === 'GET') {
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 200;
+      res.end(JSON.stringify({
+        require_login: Boolean(LOGIN_PASSWORD.trim())
+      }));
+      return;
+    }
+    
+    // 检查认证状态接口
+    if (path === '/check_auth' && req.method === 'GET') {
+      const authHeader = req.headers.authorization;
+      const isAuthenticated = Boolean(authHeader && authHeader.startsWith('Bearer '));
+      
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 200;
+      res.end(JSON.stringify({
+        authenticated: isAuthenticated
+      }));
+      return;
+    }
+    
     // 登录接口
     if (path === '/login' && req.method === 'POST') {
       let body = '';
