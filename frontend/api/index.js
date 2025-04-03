@@ -18,6 +18,7 @@ async function handleRequest(req, res) {
     // 修复路径匹配问题，确保正确处理API路径
     // 无论是直接访问/check_auth还是/api/check_auth都能正确匹配
     let path = pathname;
+    console.log("1-path是"+${path});
     if (path.startsWith('/api/')) {
       path = path.substring(4); // 移除'/api/'前缀
     } else if (path === '/api') {
@@ -105,6 +106,7 @@ async function handleRequest(req, res) {
       });
       return;
     }
+    console.log("2-path是"+${path});
     
     // 需要登录检查的接口
     if (LOGIN_PASSWORD.trim() && path !== '/login') {
@@ -150,6 +152,8 @@ async function handleRequest(req, res) {
       });
       return;
     }
+
+    console.log("3-path是"+${path});
     
     // 默认响应
     res.statusCode = 404;
